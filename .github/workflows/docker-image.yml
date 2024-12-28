@@ -27,7 +27,11 @@ jobs:
       run: echo "sha=${GITHUB_SHA}" >> $GITHUB_ENV
     
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag nishizhen/opus-mt:${{ env.timestamp }}-${{ env.sha }}
+      run: |
+        docker build . --file Dockerfile --tag nishizhen/opus-mt:${{ env.timestamp }}-${{ env.sha }}
+        docker tag nishizhen/opus-mt:${{ env.timestamp }}-${{ env.sha }} nishizhen/opus-mt:latest
     
     - name: Push the Docker image
-      run: docker push nishizhen/opus-mt:${{ env.timestamp }}-${{ env.sha }}
+      run: |
+        docker push nishizhen/opus-mt:${{ env.timestamp }}-${{ env.sha }}
+        docker push nishizhen/opus-mt:latest
