@@ -7,12 +7,17 @@ on:
     branches: [ "master" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+    
+    - name: Log in to Docker Hub
+      run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
+    
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag opus-mt:$(date +%s)
+      run: docker build . --file Dockerfile --tag nishizhen/opus-mt:$(date +%s)
+    
+    - name: Push the Docker image
+      run: docker push nishizhen/opus-mt:$(date +%s)
