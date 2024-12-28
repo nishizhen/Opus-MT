@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 
 # Install base packages
 RUN set -eux; \
-    sh -c 'echo deb http://deb.debian.org/debian buster-backports main > /etc/apt/sources.list.d/buster-backports.list'; \
+    sh -c 'echo deb http://archive.debian.org/debian buster-backports main > /etc/apt/sources.list.d/buster-backports.list'; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
 		ca-certificates git wget gnupg build-essential lsb-release g++ \
@@ -17,23 +17,22 @@ RUN set -eux; \
 		libprotobuf23 protobuf-compiler libprotobuf-dev \
 		python3-dev python3-pip python3-setuptools python3-websocket python3-venv;
 
-# Install Intel libraries
-RUN set -eux; \
-	wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB; \
-	apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB; \
-	sh -c 'echo deb https://apt.repos.intel.com/mkl all main > /etc/apt/sources.list.d/intel-mkl.list';\
-	apt-get update; \
-	apt-get install -y --no-install-recommends \
-		intel-mkl-64bit-2019.5-075; \
-	rm -f GPG-PUB-KEY-INTEL-SW-PRODUCTS-2019.PUB;
-
+# # Install Intel libraries
+# RUN set -eux; \
+# 	apt install -y gpg-agent wget; \
+# 	# download the key to system keyring
+# 	wget -O- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor | tee /usr/share/keyrings/oneapi-archive-keyring.gpg > /dev/null; \
+# 	# add signed entry to apt sources and configure the APT client to use Intel repository:
+# 	echo "deb [signed-by=/usr/share/keyrings/oneapi-archive-keyring.gpg] https://apt.repos.intel.com/oneapi all main" | tee /etc/apt/sources.list.d/oneAPI.list; \
+# 	apt update; \
+# 	apt install intel-oneapi-base-toolkit ;
 
 # Build Marian, using static libraries so we can simply pluck the compiled
 # marian-server out later
 RUN set -eux; \
 	git clone https://github.com/marian-nmt/marian marian; \
 	cd marian; \
-	git checkout 1.9.0; \
+	git checkout 1.12.0; \
 	cmake . -DUSE_STATIC_LIBS=on -DCOMPILE_SERVER=on -DUSE_SENTENCEPIECE=on -DCOMPILE_CPU=on -DCOMPILE_CUDA=off;  \
 	make -j4 marian_server ;
 

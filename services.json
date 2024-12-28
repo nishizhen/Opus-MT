@@ -12,6 +12,13 @@
             "targetspm": "./models/en-fi/target.spm",
             "host": "localhost",
             "port": "10002"
+        },
+        "zh": {
+            "configuration": "./models/eng-zho/decoder.yml",
+            "sourcespm": "./models/eng-zho/source.spm",
+            "targetspm": "./models/eng-zho/target.spm",
+            "host": "localhost",
+            "port": "10003"
         }
     }
 }
