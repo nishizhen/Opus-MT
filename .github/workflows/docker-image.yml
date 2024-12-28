@@ -20,11 +20,14 @@ jobs:
       uses: docker/setup-buildx-action@v1
     
     - name: Create timestamp variable
-      id: vars
-      run: echo "::set-output name=timestamp::$(date +%s)"
+      run: |
+        echo "timestamp=$(date +%s)" >> $GITHUB_ENV
+    
+    - name: Get commit SHA
+      run: echo "sha=${GITHUB_SHA}" >> $GITHUB_ENV
     
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag nishizhen/opus-mt:${{ steps.vars.outputs.timestamp }}
+      run: docker build . --file Dockerfile --tag nishizhen/opus-mt:${{ env.timestamp }}-${{ env.sha }}
     
     - name: Push the Docker image
-      run: docker push nishizhen/opus-mt:${{ steps.vars.outputs.timestamp }}
+      run: docker push nishizhen/opus-mt:${{ env.timestamp }}-${{ env.sha }}
