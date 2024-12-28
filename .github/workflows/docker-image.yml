@@ -16,8 +16,15 @@ jobs:
     - name: Log in to Docker Hub
       run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
     
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    
+    - name: Create timestamp variable
+      id: vars
+      run: echo "::set-output name=timestamp::$(date +%s)"
+    
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag nishizhen/opus-mt:$(date +%s)
+      run: docker build . --file Dockerfile --tag nishizhen/opus-mt:${{ steps.vars.outputs.timestamp }}
     
     - name: Push the Docker image
-      run: docker push nishizhen/opus-mt:$(date +%s)
+      run: docker push nishizhen/opus-mt:${{ steps.vars.outputs.timestamp }}
